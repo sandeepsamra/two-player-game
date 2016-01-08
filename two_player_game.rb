@@ -1,3 +1,4 @@
+#already used OOP for first version of game
 
 class Person
 attr_accessor :lives
