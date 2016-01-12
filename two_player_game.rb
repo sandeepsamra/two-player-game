@@ -1,19 +1,25 @@
-#already used OOP for first version of game
+class InvalidGuessError < StandardError
+end
+
+class InvalidNameError < StandardError
+end
 
 class Person
-attr_accessor :lives
-attr_accessor :score
-attr_accessor :name
-  def initialize(name, lives, score)
-    @name = name
+
+  attr_accessor :lives
+  attr_accessor :score
+  attr_accessor :name
+
+  def initialize(lives, score)
+    @name = nil
     @lives = lives
     @score = score
   end
 
 end
 
-@player_1 = Person.new("Player 1", 3, 0)
-@player_2 = Person.new("Player 2", 3, 0)
+@player_1 = Person.new(3, 0)
+@player_2 = Person.new(3, 0)
 
 def generate_question
   x = rand(1..20)
@@ -35,6 +41,29 @@ def players_alive
   @player_1.lives >= 1 && @player_2.lives >= 1
 end
 
+def prompt_player_name
+  puts "What is the first player's name?"
+  get_first_name = gets.chomp
+
+  while get_first_name.eql?("")
+    begin
+      raise InvalidNameError, "You did not enter a name"
+    rescue Exception => e
+      puts e.message
+      puts "What is the first player's name?"
+      get_first_name = gets.chomp
+    end
+  end
+  @player_1.name = get_first_name
+
+  puts "What is the second player's name?"
+  
+end
+
+#Game starts here
+
+prompt_player_name
+
 turn = 1
 while players_alive
 
@@ -47,6 +76,18 @@ while players_alive
   end
 
   prompt_player_answer
+
+#this loop treats all input as string & returns error - needs to be fixed
+
+  while !@ask_for_answer.is_a? Numeric
+    begin
+      raise InvalidGuessError, "You did not enter a number"
+    rescue Exception => e
+      puts e.message
+      puts "Please enter an actual number. mkaay!"
+      prompt_player_answer
+    end
+  end
 
   if verify_answer
     current_player.score += 1
@@ -61,5 +102,3 @@ while players_alive
 end
 
 puts "#{current_player.name} is the winner! #{other_player.name}'s score is #{other_player.score}."
-
-
