@@ -30,11 +30,11 @@ end
 
 def prompt_player_answer
   puts "What does #{generate_question} equal?"
-  @ask_for_answer = gets.chomp
+  @ask_for_answer = gets.chomp.to_i
 end
 
 def verify_answer
-  @answer == @ask_for_answer.to_i
+  @answer == @ask_for_answer
 end
 
 def players_alive
@@ -57,7 +57,19 @@ def prompt_player_name
   @player_1.name = get_first_name
 
   puts "What is the second player's name?"
-  
+  get_second_name = gets.chomp
+
+  while get_second_name.eql?("")
+    begin
+      raise InvalidNameError, "You did not enter a name"
+    rescue Exception => e
+      puts e.message
+      puts "What is the second player's name?"
+      get_second_name = gets.chomp
+    end
+  end
+  @player_2.name = get_second_name
+
 end
 
 #Game starts here
@@ -79,7 +91,7 @@ while players_alive
 
 #this loop treats all input as string & returns error - needs to be fixed
 
-  while !@ask_for_answer.is_a? Numeric
+  while @ask_for_answer == 0
     begin
       raise InvalidGuessError, "You did not enter a number"
     rescue Exception => e
